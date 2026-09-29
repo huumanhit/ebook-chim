@@ -724,8 +724,10 @@ function renderLinkedBirdBadge(birdId) {
 function renderMistakeCard(mistake) {
   return `
     <div class="mistake-card">
-      <span class="mistake-stamp">Bài Học Thực Chiến</span>
-      <div class="mistake-meta">Năm ${mistake.year} &nbsp;|&nbsp; Cá thể: ${mistake.birdCode}</div>
+      <div class="mistake-top-row">
+        <div class="mistake-meta">Năm ${mistake.year} &nbsp;|&nbsp; Cá thể: ${mistake.birdCode}</div>
+        <span class="mistake-stamp">Bài Học Thực Chiến</span>
+      </div>
       <h3 class="mistake-title">${mistake.title}</h3>
       <span class="mistake-cost"><i class="fas fa-exclamation-triangle"></i> Giá phải trả: ${mistake.cost}</span>
       <p class="mistake-story">${mistake.story}</p>
@@ -3124,6 +3126,27 @@ async function handleSyncSupabaseToLocalClick() {
 }
 
 // ==========================================================
+// 17.6. DESKTOP VIEW MODE TOGGLE (Xem giao diện máy tính trên điện thoại)
+// ==========================================================
+function toggleDesktopMode() {
+  const isDesktop = document.documentElement.classList.toggle("force-desktop");
+  const viewportMeta = document.querySelector('meta[name="viewport"]');
+  const btn = document.getElementById("desktop-mode-btn");
+
+  if (isDesktop) {
+    if (viewportMeta) viewportMeta.setAttribute("content", "width=1100, initial-scale=0.35, user-scalable=yes");
+    if (btn) btn.classList.add("active");
+    localStorage.setItem("cugay_desktop_mode", "true");
+    showToast("Đã bật chế độ xem máy tính (có thể phóng to / thu nhỏ tùy ý)");
+  } else {
+    if (viewportMeta) viewportMeta.setAttribute("content", "width=device-width, initial-scale=1.0");
+    if (btn) btn.classList.remove("active");
+    localStorage.removeItem("cugay_desktop_mode");
+    showToast("Đã quay về giao diện di động gọn gàng");
+  }
+}
+
+// ==========================================================
 // 18. INITIALIZE APP
 // ==========================================================
 window.addEventListener("DOMContentLoaded", () => {
@@ -3139,5 +3162,14 @@ window.addEventListener("DOMContentLoaded", () => {
     currentThemeIndex = THEMES.indexOf(savedTheme);
     if (currentThemeIndex === -1) currentThemeIndex = 0;
     applyTheme(savedTheme);
+  }
+
+  // Khôi phục desktop mode nếu đã lưu
+  if (localStorage.getItem("cugay_desktop_mode") === "true") {
+    document.documentElement.classList.add("force-desktop");
+    const viewportMeta = document.querySelector('meta[name="viewport"]');
+    if (viewportMeta) viewportMeta.setAttribute("content", "width=1100, initial-scale=0.35, user-scalable=yes");
+    const btn = document.getElementById("desktop-mode-btn");
+    if (btn) btn.classList.add("active");
   }
 });

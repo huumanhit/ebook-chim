@@ -2,6 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
+  <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
@@ -93,6 +94,11 @@
           <i class="fas fa-moon"></i>
         </button>
 
+        <!-- Desktop Mode Toggle -->
+        <button class="action-btn desktop-toggle-btn" id="desktop-mode-btn" onclick="toggleDesktopMode()" title="Chuyển chế độ xem: Máy tính / Di động">
+          <i class="fas fa-desktop"></i>
+        </button>
+
         <!-- User Profile & Account Action Widget -->
         <div id="header-user-widget" class="header-user-widget"></div>
 
@@ -103,6 +109,20 @@
       </div>
     </div>
   </header>
+
+  <!-- Mobile Quick Nav: Thanh menu trượt ngang tiện lợi trên điện thoại -->
+  <nav class="mobile-quick-nav" id="mobile-quick-nav">
+    <div class="quick-nav-track">
+      <a href="/" class="quick-nav-pill active"><i class="fas fa-home"></i> Trang chủ</a>
+      <a href="/quan-diem" class="quick-nav-pill"><i class="fas fa-compass"></i> Quan điểm</a>
+      <a href="/cach-nhin-chim" class="quick-nav-pill"><i class="fas fa-feather-alt"></i> 16 Tiêu chí</a>
+      <a href="/tien-va-hau" class="quick-nav-pill"><i class="fas fa-balance-scale"></i> Tiền & Hậu</a>
+      <a href="/thuc-chien" class="quick-nav-pill"><i class="fas fa-tree"></i> Thực chiến</a>
+      <a href="/nhung-lan-chon-sai" class="quick-nav-pill"><i class="fas fa-exclamation-triangle"></i> Chọn sai</a>
+      <a href="/cong-dong" class="quick-nav-pill"><i class="fas fa-users"></i> Cộng đồng</a>
+      <a href="/so-tay-ebook" class="quick-nav-pill"><i class="fas fa-book-open"></i> Sổ tay</a>
+    </div>
+  </nav>
 
   <!-- App Main Content Root (Rendered by Router) -->
   <main id="app-root"></main>
