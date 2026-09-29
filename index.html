@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <!-- Primary Meta Tags -->
+  <title>Sổ Tay Chọn Chim Cu Gáy - Thư Viện Quan Điểm & Thực Chiến Người Chơi</title>
+  <meta name="title" content="Sổ Tay Chọn Chim Cu Gáy - Thư Viện Quan Điểm & Thực Chiến">
+  <meta name="description" content="Thư viện quan điểm và kinh nghiệm thực chiến của người chơi chim cu gáy. Mộc mạc, không giáo điều, không xếp hạng điểm số. Thực chiến làm thước đo.">
+  <meta name="keywords" content="chim cu gáy, chọn chim cu gáy, chim mồi, cu gáy giọng thổ, tiền và hậu, cườm chim cu, gù đấu, kinh nghiệm chơi cu gáy, cộng đồng cu gáy">
+  <meta name="author" content="Người Mê Cu Gáy Rừng">
+  <meta name="theme-color" content="#FAF6ED">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://cugayguide.local/">
+  <meta property="og:title" content="Sổ Tay Chọn Chim Cu Gáy - Thư Viện Quan Điểm Người Chơi">
+  <meta property="og:description" content="Không dạy bạn chọn chim. Chỉ cho bạn cách tôi nhìn một con chim. Nơi chia sẻ góc nhìn mộc mạc và hồ sơ thực chiến qua thời gian.">
+  <meta property="og:image" content="./assets/images/hero-dove.jpg">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="Sổ Tay Chọn Chim Cu Gáy - Thư Viện Quan Điểm">
+  <meta property="twitter:description" content="Không dạy bạn chọn chim. Chỉ cho bạn cách tôi nhìn một con chim.">
+  <meta property="twitter:image" content="./assets/images/hero-dove.jpg">
+
+  <!-- Google Fonts: Lora & Be Vietnam Pro -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="./assets/css/variables.css">
+  <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#/" class="site-logo">
+        <div class="logo-badge">
+          <i class="fas fa-feather-alt"></i>
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">Sổ Tay Cu Gáy</span>
+          <span class="logo-tagline">Thư Viện Quan Điểm</span>
+        </div>
+      </a>
+
+      <!-- Main Navigation -->
+      <nav class="site-nav" id="site-nav">
+        <a href="#/" class="nav-link active">Trang chủ</a>
+        <a href="#/quan-diem" class="nav-link">Quan điểm</a>
+        <a href="#/cach-nhin-chim" class="nav-link">Cách nhìn chim</a>
+        <a href="#/tien-va-hau" class="nav-link">Tiền & Hậu</a>
+        <a href="#/thuc-chien" class="nav-link">Thực chiến</a>
+        <a href="#/nhung-lan-chon-sai" class="nav-link">Những lần chọn sai</a>
+        <a href="#/nhat-ky" class="nav-link">Nhật ký</a>
+        <a href="#/cong-dong" class="nav-link"><i class="fas fa-users"></i> Cộng đồng</a>
+        <a href="#/gioi-thieu" class="nav-link">Giới thiệu</a>
+
+        <div class="mobile-drawer-footer" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-subtle); gap: 0.5rem; flex-direction: column;">
+          <div id="mobile-user-actions" style="margin-bottom: 0.5rem;"></div>
+          <button class="btn-secondary" onclick="toggleAudio(); toggleMobileMenu();" style="width: 100%; justify-content: center; font-size: 0.88rem;">
+            <i class="fas fa-volume-up"></i> Bật / Tắt Tiếng Chim Sớm Mai
+          </button>
+          <button class="btn-secondary" onclick="switchTheme(); toggleMobileMenu();" style="width: 100%; justify-content: center; font-size: 0.88rem;">
+            <i class="fas fa-moon"></i> Đổi Màu Giao Diện
+          </button>
+        </div>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="header-actions">
+        <!-- Audio Ambiance Toggle -->
+        <button class="action-btn audio-btn" id="audio-toggle-btn" onclick="toggleAudio()" title="Bật/Tắt âm thanh buổi sớm & tiếng cu gáy gù">
+          <i class="fas fa-volume-up"></i>
+        </button>
+
+        <!-- Search Button (Ctrl+K) -->
+        <button class="action-btn" onclick="openSearchModal()" title="Tìm kiếm bài viết, tiêu chí (Ctrl+K)">
+          <i class="fas fa-search"></i>
+        </button>
+
+        <!-- Theme Switcher -->
+        <button class="action-btn theme-btn" onclick="switchTheme()" title="Đổi màu giao diện (Giấy Dó / Gỗ Mun / Sân Vườn)">
+          <i class="fas fa-moon"></i>
+        </button>
+
+        <!-- User Profile & Account Action Widget -->
+        <div id="header-user-widget" class="header-user-widget"></div>
+
+        <!-- Mobile Drawer Toggle -->
+        <button class="action-btn mobile-toggle" onclick="toggleMobileMenu()" title="Mở danh mục">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- App Main Content Root (Rendered by Router) -->
+  <main id="app-root"></main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>Sổ Tay Chọn Chim Cu Gáy</h3>
+          <p>
+            "Không dạy bạn chọn chim. Chỉ cho bạn cách tôi nhìn một con chim."<br>
+            Một thư viện mở ghi chép lại những góc nhìn, những buổi sớm dợt cội và những hành trình thực chiến của người chơi chim cu gáy khắp mọi miền.
+          </p>
+          <div style="margin-top: 1.25rem; font-style: italic; color: #FAF6ED; font-family: var(--font-serif);">
+            “Mỗi người có một cách nhìn chim riêng. Không có tiêu chuẩn tuyệt đối.”
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Chuyên Mục Chính</h4>
+          <ul class="footer-links">
+            <li><a href="#/quan-diem"><i class="fas fa-angle-right"></i> Quan điểm cá nhân</a></li>
+            <li><a href="#/cach-nhin-chim"><i class="fas fa-angle-right"></i> 16 Tiêu chí nhìn chim</a></li>
+            <li><a href="#/tien-va-hau"><i class="fas fa-angle-right"></i> Nghệ thuật Tiền & Hậu</a></li>
+            <li><a href="#/thuc-chien"><i class="fas fa-angle-right"></i> Nhật ký thực chiến</a></li>
+            <li><a href="#/nhung-lan-chon-sai"><i class="fas fa-angle-right"></i> Những lần chọn sai</a></li>
+            <li><a href="#/cong-dong"><i class="fas fa-users"></i> Thư viện cộng đồng</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Góc Thưởng Thức & Giao Lưu</h4>
+          <ul class="footer-links">
+            <li><a href="#/viet-bai"><i class="fas fa-pen-nib"></i> Viết bài chia sẻ góc nhìn</a></li>
+            <li><a href="#/them-chim"><i class="fas fa-feather"></i> Tạo hồ sơ cá thể chim</a></li>
+            <li><a href="#/so-tay-ebook"><i class="fas fa-file-pdf"></i> Đọc bản in Ebook toàn tập</a></li>
+            <li><a href="#/gioi-thieu"><i class="fas fa-user-circle"></i> Về người ghi chép</a></li>
+            <li><a href="javascript:void(0)" onclick="openAuthModal()"><i class="fas fa-id-card"></i> Tài khoản người chơi</a></li>
+            <li><a href="#/quan-tri"><i class="fas fa-shield-alt"></i> Kiểm duyệt nội dung (Admin)</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          © 2026 Sổ Tay Chọn Chim Cu Gáy - Thư Viện Quan Điểm Mộc Mạc.
+        </div>
+        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+          <a href="javascript:void(0)" onclick="openSupabaseModal()" style="color: var(--accent); font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 500;">
+            <i class="fas fa-database"></i> Supabase Cloud (fowwdgzbmuwhmuujuaii)
+          </a>
+          <span>Bạn có thể không đồng ý với quan điểm này. Và đó là điều bình thường.</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal: Quản Lý Database Supabase -->
+  <div class="modal-overlay" id="supabase-modal" onclick="if(event.target === this) closeSupabaseModal()">
+    <div class="modal-box" style="max-width: 600px;">
+      <button class="modal-close-btn" onclick="closeSupabaseModal()" title="Đóng">
+        <i class="fas fa-times"></i>
+      </button>
+      <div id="supabase-modal-content">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: 16 Tiêu Chí Cấu Trúc 5 Phần -->
+  <div class="modal-overlay" id="criteria-modal-overlay" onclick="if(event.target === this) closeCriteriaModal()">
+    <div class="modal-box">
+      <button class="modal-close-btn" onclick="closeCriteriaModal()" title="Đóng cửa sổ">
+        <i class="fas fa-times"></i>
+      </button>
+      <div id="criteria-modal-content">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Modal -->
+  <div class="search-modal" id="search-modal" onclick="if(event.target === this) closeSearchModal()">
+    <div class="search-dialog">
+      <div class="search-input-wrap">
+        <i class="fas fa-search" style="color: var(--text-muted); font-size: 1.15rem;"></i>
+        <input type="text" id="search-input" placeholder="Tìm theo tiêu chí (mắt, cườm, gù...), bài viết, người chơi, đàn chim..." oninput="handleSearchInput(event)">
+        <button onclick="closeSearchModal()" style="color: var(--text-light); font-size: 1.1rem; padding: 0.2rem 0.5rem;">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="search-results" id="search-results-list">
+        <!-- Live search results -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Auth (Đăng Nhập / Đăng Ký / Chuyển Demo) -->
+  <div class="modal-overlay" id="auth-modal" onclick="if(event.target === this) closeAuthModal()">
+    <div class="modal-box auth-modal-box">
+      <button class="modal-close-btn" onclick="closeAuthModal()" title="Đóng">
+        <i class="fas fa-times"></i>
+      </button>
+      <div id="auth-modal-content">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Chỉnh Sửa Hồ Sơ Cá Nhân -->
+  <div class="modal-overlay" id="profile-edit-modal" onclick="if(event.target === this) closeProfileEditModal()">
+    <div class="modal-box profile-modal-box">
+      <button class="modal-close-btn" onclick="closeProfileEditModal()" title="Đóng">
+        <i class="fas fa-times"></i>
+      </button>
+      <div id="profile-edit-content">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Báo Cáo Vi Phạm (Report) -->
+  <div class="modal-overlay" id="report-modal" onclick="if(event.target === this) closeReportModal()">
+    <div class="modal-box report-modal-box">
+      <button class="modal-close-btn" onclick="closeReportModal()" title="Đóng">
+        <i class="fas fa-times"></i>
+      </button>
+      <div id="report-modal-content">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-msg" id="toast-msg"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./assets/js/data.js"></script>
+  <script src="./assets/js/supabase-client.js"></script>
+  <script src="./assets/js/audio-ambiance.js"></script>
+  <script src="./assets/js/router.js"></script>
+  <script src="./assets/js/app.js"></script>
+</body>
+</html>

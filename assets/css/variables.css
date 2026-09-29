@@ -1,0 +1,108 @@
+:root {
+  /* Bảng màu Giấy Dó & Gỗ Trầm (Mặc định) */
+  --bg-primary: #FAF6ED;
+  --bg-surface: #FFFFFF;
+  --bg-parchment: #F3EBDD;
+  --bg-card: #FFFFFF;
+  --bg-accent: #EFE4D2;
+  --bg-header: rgba(250, 246, 237, 0.94);
+
+  /* Màu gỗ và tự nhiên */
+  --wood-dark: #2B1D14;
+  --wood-main: #4A3323;
+  --wood-light: #7A573D;
+  --wood-border: #DBC8B0;
+  --bamboo-green: #2B4538;
+  --bamboo-light: #416353;
+  --terracotta: #A64724;
+  --brass: #C08A3E;
+
+  /* Typography Colors */
+  --text-main: #241A15;
+  --text-muted: #6B5A4E;
+  --text-light: #948275;
+  --text-heading: #1F1510;
+  --text-gold: #966724;
+
+  /* Fonts */
+  --font-serif: 'Lora', 'Playfair Display', Georgia, serif;
+  --font-sans: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'SFMono-Regular', Consolas, "Liberation Mono", Menlo, monospace;
+
+  /* Spacing & Sizes */
+  --container-max: 1180px;
+  --reading-max: 760px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Shadows */
+  --shadow-subtle: 0 2px 10px rgba(43, 29, 20, 0.04);
+  --shadow-card: 0 4px 20px rgba(43, 29, 20, 0.07);
+  --shadow-hover: 0 10px 30px rgba(43, 29, 20, 0.12);
+  --shadow-wood: 0 8px 24px rgba(43, 29, 20, 0.16);
+
+  /* Textures / Borders */
+  --border-rough: 1px solid var(--wood-border);
+  --border-subtle: 1px solid rgba(122, 87, 61, 0.15);
+}
+
+/* Chế độ Ban Đêm / Gỗ Mun */
+[data-theme="dark"] {
+  --bg-primary: #181310;
+  --bg-surface: #221C18;
+  --bg-parchment: #2B231E;
+  --bg-card: #221C18;
+  --bg-accent: #332A24;
+  --bg-header: rgba(24, 19, 16, 0.94);
+
+  --wood-dark: #FAF6ED;
+  --wood-main: #D9C7B4;
+  --wood-light: #A8937F;
+  --wood-border: #42362E;
+  --bamboo-green: #52806A;
+  --bamboo-light: #6FA38B;
+  --terracotta: #D86B42;
+  --brass: #E0A855;
+
+  --text-main: #EFE6DD;
+  --text-muted: #B3A294;
+  --text-light: #7E6F63;
+  --text-heading: #FAF6ED;
+  --text-gold: #DEB06B;
+
+  --shadow-subtle: 0 2px 10px rgba(0, 0, 0, 0.3);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.55);
+  --shadow-wood: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --border-subtle: 1px solid rgba(217, 199, 180, 0.12);
+}
+
+/* Chế độ Sân Vườn Ban Mai */
+[data-theme="garden"] {
+  --bg-primary: #F4F7F4;
+  --bg-surface: #FFFFFF;
+  --bg-parchment: #E8EFE8;
+  --bg-card: #FFFFFF;
+  --bg-accent: #DEE8DE;
+  --bg-header: rgba(244, 247, 244, 0.94);
+
+  --wood-dark: #1E3125;
+  --wood-main: #2D4C3A;
+  --wood-light: #527A63;
+  --wood-border: #C2D4C6;
+  --bamboo-green: #1F422E;
+  --bamboo-light: #3D6C50;
+  --terracotta: #9C4524;
+  --brass: #A87D2B;
+
+  --text-main: #1D2A21;
+  --text-muted: #536B5C;
+  --text-light: #799182;
+  --text-heading: #14221A;
+  --text-gold: #85611B;
+
+  --border-subtle: 1px solid rgba(45, 76, 58, 0.15);
+}
