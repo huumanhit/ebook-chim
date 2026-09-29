@@ -1847,6 +1847,93 @@ button {
   color: var(--wood-dark);
 }
 
+/* Guest Header Widget */
+.guest-header-widget {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.btn-guest-login,
+.btn-guest-register,
+.btn-guest-demo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.38rem 0.75rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+.btn-guest-login {
+  background: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+}
+.btn-guest-login:hover {
+  background: var(--bg-parchment);
+  border-color: var(--wood-main);
+  color: var(--wood-main);
+}
+.btn-guest-register {
+  background: var(--wood-main);
+  color: #fff;
+  border: 1px solid var(--wood-main);
+}
+.btn-guest-register:hover {
+  background: var(--wood-dark);
+}
+.btn-guest-demo {
+  background: rgba(184, 115, 51, 0.12);
+  color: var(--copper);
+  border: 1px solid rgba(184, 115, 51, 0.3);
+}
+.btn-guest-demo:hover {
+  background: rgba(184, 115, 51, 0.22);
+  border-color: var(--copper);
+}
+
+/* Guest Banner Callout for Create / Discussion */
+.guest-banner-callout {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(135deg, rgba(184, 115, 51, 0.08) 0%, rgba(139, 107, 73, 0.04) 100%);
+  border: 1px solid rgba(184, 115, 51, 0.3);
+  border-left: 4px solid var(--copper);
+  border-radius: var(--radius-sm);
+  margin-bottom: 2rem;
+}
+.guest-callout-icon {
+  font-size: 1.75rem;
+  color: var(--copper);
+  margin-top: 0.25rem;
+  flex-shrink: 0;
+}
+.guest-callout-content h4 {
+  font-size: 1.1rem;
+  color: var(--text-heading);
+  margin-bottom: 0.35rem;
+}
+.guest-callout-content p {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 0.85rem;
+}
+.guest-callout-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+.btn-sm {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.85rem;
+}
+
 /* Badges: Tác giả vs Cộng đồng (Section 20.10) */
 .badge-author {
   display: inline-flex;
@@ -3123,7 +3210,27 @@ button {
     flex-shrink: 0;
   }
   .header-actions .header-user-widget {
+    display: flex !important;
+  }
+  .guest-header-widget .btn-guest-login,
+  .guest-header-widget .btn-guest-register {
     display: none !important;
+  }
+  .guest-header-widget .btn-guest-demo {
+    padding: 0.3rem 0.55rem;
+    font-size: 0.78rem;
+  }
+  .user-profile-badge-btn .user-display-name,
+  .user-profile-badge-btn .fa-chevron-down {
+    display: none !important;
+  }
+  .user-profile-badge-btn {
+    padding: 2px;
+    border-radius: 50%;
+  }
+  .user-profile-badge-btn img {
+    width: 30px;
+    height: 30px;
   }
   .action-btn.audio-btn, .action-btn.theme-btn {
     display: none !important;

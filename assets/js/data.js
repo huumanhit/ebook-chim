@@ -815,7 +815,7 @@ const CURRENT_USER_KEY = "cugay_current_user_id";
 class CuGayDatabase {
   constructor() {
     this.data = this.loadData();
-    this.currentUserId = localStorage.getItem(CURRENT_USER_KEY) || "user_author"; // Mặc định tác giả
+    this.currentUserId = localStorage.getItem(CURRENT_USER_KEY) || null;
   }
 
   loadData() {
@@ -847,14 +847,25 @@ class CuGayDatabase {
   resetToSeed() {
     this.data = JSON.parse(JSON.stringify(SEED_DATA));
     this.saveData(this.data);
-    this.currentUserId = "user_author";
-    localStorage.setItem(CURRENT_USER_KEY, this.currentUserId);
+    this.currentUserId = null;
+    localStorage.removeItem(CURRENT_USER_KEY);
     return this.data;
   }
 
   // --- Auth & Users ---
+  isLoggedIn() {
+    return !!this.currentUserId && !!this.getUserById(this.currentUserId);
+  }
+
   getCurrentUser() {
-    return this.data.users.find(u => u.id === this.currentUserId) || this.data.users[0];
+    if (!this.currentUserId) return null;
+    return this.data.users.find(u => u.id === this.currentUserId) || null;
+  }
+
+  logout() {
+    this.currentUserId = null;
+    localStorage.removeItem(CURRENT_USER_KEY);
+    return true;
   }
 
   setCurrentUser(userId) {
@@ -981,6 +992,7 @@ class CuGayDatabase {
 
   createArticle(articleData) {
     const currentUser = this.getCurrentUser();
+    if (!currentUser) return null;
     const isAuthor = currentUser.role === "admin" || currentUser.id === "user_author";
     
     // Tạo slug từ tiêu đề
@@ -1058,6 +1070,7 @@ class CuGayDatabase {
 
   createBird(birdData) {
     const currentUser = this.getCurrentUser();
+    if (!currentUser) return null;
     const newBird = {
       id: "bird_" + Date.now(),
       ownerId: currentUser.id,
@@ -1112,6 +1125,7 @@ class CuGayDatabase {
 
   addComment(articleId, content, parentId = null) {
     const currentUser = this.getCurrentUser();
+    if (!currentUser) return null;
     const newComment = {
       id: "cm_" + Date.now(),
       articleId: articleId,
@@ -1142,6 +1156,7 @@ class CuGayDatabase {
   // --- Reactions (👍 Thích, 💡 Hữu ích, 🤝 Có kinh nghiệm tương tự) ---
   toggleReaction(targetType, targetId, reactionType) {
     const currentUser = this.getCurrentUser();
+    if (!currentUser) return { requireAuth: true };
     const userReactKey = `cugay_react_${currentUser.id}_${targetType}_${targetId}`;
     const prevReact = localStorage.getItem(userReactKey);
 
@@ -1179,12 +1194,14 @@ class CuGayDatabase {
 
   getUserReaction(targetType, targetId) {
     const currentUser = this.getCurrentUser();
+    if (!currentUser) return null;
     return localStorage.getItem(`cugay_react_${currentUser.id}_${targetType}_${targetId}`);
   }
 
   // --- Follow ---
   isFollowing(followingUserId) {
     const currentUser = this.getCurrentUser();
+    if (!currentUser) return false;
     return (this.data.follows || []).some(
       f => f.followerId === currentUser.id && f.followingId === followingUserId
     );
@@ -1192,6 +1209,7 @@ class CuGayDatabase {
 
   toggleFollow(followingUserId) {
     const currentUser = this.getCurrentUser();
+    if (!currentUser) return { requireAuth: true };
     if (currentUser.id === followingUserId) return false;
 
     if (!this.data.follows) this.data.follows = [];
@@ -1232,6 +1250,7 @@ class CuGayDatabase {
   // --- Bookmark ---
   isBookmarked(targetType, targetId) {
     const currentUser = this.getCurrentUser();
+    if (!currentUser) return false;
     return (this.data.bookmarks || []).some(
       b => b.userId === currentUser.id && b.targetType === targetType && b.targetId === targetId
     );
@@ -1239,6 +1258,7 @@ class CuGayDatabase {
 
   toggleBookmark(targetType, targetId) {
     const currentUser = this.getCurrentUser();
+    if (!currentUser) return { requireAuth: true };
     if (!this.data.bookmarks) this.data.bookmarks = [];
 
     const idx = this.data.bookmarks.findIndex(

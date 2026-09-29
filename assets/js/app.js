@@ -1286,13 +1286,34 @@ function initBirdDetailEvents() {
 // ==========================================================
 function renderCreateArticleView() {
   const currentUser = CUGAY_DB.getCurrentUser();
-  const userBirds = CUGAY_DB.getBirds(currentUser.id);
-  const isAdmin = currentUser.role === "admin";
+  const userBirds = currentUser ? CUGAY_DB.getBirds(currentUser.id) : [];
+  const isAdmin = currentUser && currentUser.role === "admin";
 
   return `
     <div class="create-content-page">
       <div class="reading-container">
         <a href="#/cong-dong" class="article-back-link"><i class="fas fa-arrow-left"></i> Trở về Thư viện quan điểm</a>
+
+        ${!currentUser ? `
+          <div class="guest-banner-callout">
+            <div class="guest-callout-icon"><i class="fas fa-feather-alt"></i></div>
+            <div class="guest-callout-content">
+              <h4>Bạn đang xem dưới chế độ khách đọc tự do</h4>
+              <p>Bạn vẫn có thể viết bài ngay lúc này! Khi gửi bài, hệ thống sẽ lưu nguyên nội dung và mời bạn 1-click chọn nick hoặc đăng ký 10 giây để xuất bản.</p>
+              <div class="guest-callout-actions">
+                <button type="button" class="btn-primary btn-sm" onclick="openAuthModal('demo')">
+                  <i class="fas fa-magic"></i> 🎭 1-Click Dùng thử (Nick mẫu)
+                </button>
+                <button type="button" class="btn-secondary btn-sm" onclick="openAuthModal('register')">
+                  <i class="fas fa-user-plus"></i> Đăng ký 10s (Không cần email)
+                </button>
+                <button type="button" class="btn-secondary btn-sm" onclick="openAuthModal('login')">
+                  <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                </button>
+              </div>
+            </div>
+          </div>
+        ` : ''}
 
         <div class="form-header-card">
           <span class="hero-eyebrow"><i class="fas fa-pen-nib"></i> Thư Viện Quan Điểm Mộc Mạc</span>
@@ -1422,15 +1443,24 @@ function handleCreateArticleSubmit(e) {
     tags: rawTags.length ? rawTags : ["Quan điểm", "Cộng đồng"]
   };
 
+  if (!CUGAY_DB.isLoggedIn()) {
+    window._pendingArticle = articleData;
+    showToast("Bài viết đã được lưu tạm an toàn! Hãy chọn tài khoản để xuất bản.");
+    openAuthModal("demo");
+    return;
+  }
+
   const newArt = CUGAY_DB.createArticle(articleData);
   const currentUser = CUGAY_DB.getCurrentUser();
 
-  if (newArt.status === "published") {
+  if (newArt && newArt.status === "published") {
     showToast("Bài viết đã xuất bản thành công!");
-    window.location.hash = `#/bai-viet/${newArt.slug}`;
+    if (typeof router !== "undefined") router.navigate(`/bai-viet/${newArt.slug}`);
+    else window.location.hash = `#/bai-viet/${newArt.slug}`;
   } else {
     showToast("Bài viết đã được gửi tới Ban quản trị (Chờ duyệt)!");
-    window.location.hash = `#/u/${currentUser.username}`;
+    if (typeof router !== "undefined") router.navigate(`/u/${currentUser.username}`);
+    else window.location.hash = `#/u/${currentUser.username}`;
   }
 }
 
@@ -1442,10 +1472,33 @@ function initCreateArticleEvents() {
 // 7. CREATE BIRD VIEW (Section 20.4)
 // ==========================================================
 function renderCreateBirdView() {
+  const currentUser = CUGAY_DB.getCurrentUser();
+
   return `
     <div class="create-content-page">
       <div class="reading-container">
         <a href="#/cong-dong" class="article-back-link"><i class="fas fa-arrow-left"></i> Trở về Thư viện quan điểm</a>
+
+        ${!currentUser ? `
+          <div class="guest-banner-callout">
+            <div class="guest-callout-icon"><i class="fas fa-feather"></i></div>
+            <div class="guest-callout-content">
+              <h4>Bạn đang xem dưới chế độ khách đọc tự do</h4>
+              <p>Bạn vẫn có thể điền thông tin chú chim ngay! Khi bấm tạo hồ sơ, hệ thống sẽ lưu nguyên thông tin và mời bạn chọn nick để đứng tên chú chim.</p>
+              <div class="guest-callout-actions">
+                <button type="button" class="btn-primary btn-sm" onclick="openAuthModal('demo')">
+                  <i class="fas fa-magic"></i> 🎭 1-Click Dùng thử (Nick mẫu)
+                </button>
+                <button type="button" class="btn-secondary btn-sm" onclick="openAuthModal('register')">
+                  <i class="fas fa-user-plus"></i> Đăng ký 10s (Không cần email)
+                </button>
+                <button type="button" class="btn-secondary btn-sm" onclick="openAuthModal('login')">
+                  <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                </button>
+              </div>
+            </div>
+          </div>
+        ` : ''}
 
         <div class="form-header-card">
           <span class="hero-eyebrow"><i class="fas fa-feather"></i> Quá Trình Theo Dài Lâu</span>
@@ -1566,9 +1619,17 @@ function handleCreateBirdSubmit(e) {
     firstStageNote: form.firstStageNote.value.trim()
   };
 
+  if (!CUGAY_DB.isLoggedIn()) {
+    window._pendingBird = birdData;
+    showToast("Hồ sơ chim đã được giữ an toàn! Hãy chọn tài khoản để hoàn tất.");
+    openAuthModal("demo");
+    return;
+  }
+
   const newBird = CUGAY_DB.createBird(birdData);
   showToast("Đã khởi tạo hồ sơ chú chim thành công!");
-  window.location.hash = `#/chim/${newBird.id}`;
+  if (typeof router !== "undefined") router.navigate(`/chim/${newBird.id}`);
+  else window.location.hash = `#/chim/${newBird.id}`;
 }
 
 function initCreateBirdEvents() {
@@ -1894,6 +1955,7 @@ function renderArticleDetailView(slug) {
   const userReact = CUGAY_DB.getUserReaction("article", article.id);
   const reactions = article.reactions || { thich: 0, huuIch: 0, dongDieu: 0 };
   const comments = CUGAY_DB.getComments(article.id);
+  const currentUser = CUGAY_DB.getCurrentUser();
 
   // Badge Tác giả vs Cộng đồng (Section 20.10)
   const badgeHtml = article.isAuthor 
@@ -2018,8 +2080,12 @@ function renderArticleDetailView(slug) {
           <!-- New Comment Form -->
           <form id="comment-form" onsubmit="handlePostComment(event, '${article.id}')" class="comment-input-form">
             <textarea id="comment-content" rows="3" placeholder="Chia sẻ góc nhìn hoặc trường hợp thực tế tương tự của bạn..." required></textarea>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem;">
-              <span style="font-size: 0.82rem; color: var(--text-light);">Bình luận với tư cách: <strong>${CUGAY_DB.getCurrentUser().displayName}</strong></span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+              ${currentUser ? `
+                <span style="font-size: 0.82rem; color: var(--text-light);">Bình luận với tư cách: <strong>${currentUser.displayName}</strong></span>
+              ` : `
+                <span style="font-size: 0.82rem; color: var(--copper);"><i class="fas fa-info-circle"></i> Chưa đăng nhập? Cứ nhập ý kiến, hệ thống lưu sẵn để gửi ngay khi bạn chọn nick!</span>
+              `}
               <button type="submit" class="btn-primary" style="padding: 0.45rem 1.25rem; font-size: 0.9rem;">
                 <i class="fas fa-paper-plane"></i> Gửi bình luận
               </button>
@@ -2157,6 +2223,17 @@ function handlePostComment(e, articleId) {
   const input = document.getElementById("comment-content");
   if (!input || !input.value.trim()) return;
 
+  if (!CUGAY_DB.isLoggedIn()) {
+    window._pendingComment = {
+      articleId: articleId,
+      content: input.value.trim(),
+      parentId: null
+    };
+    showToast("Nội dung đã được giữ lại! Hãy chọn nick hoặc dùng thử 1-click để đăng.");
+    openAuthModal("demo");
+    return;
+  }
+
   CUGAY_DB.addComment(articleId, input.value.trim(), null);
   input.value = "";
   showToast("Cảm ơn bạn đã đóng góp góc nhìn thực chiến!");
@@ -2167,6 +2244,17 @@ function handlePostReply(e, articleId, parentId) {
   e.preventDefault();
   const textarea = e.target.querySelector("textarea");
   if (!textarea || !textarea.value.trim()) return;
+
+  if (!CUGAY_DB.isLoggedIn()) {
+    window._pendingComment = {
+      articleId: articleId,
+      content: textarea.value.trim(),
+      parentId: parentId
+    };
+    showToast("Phản hồi đã được giữ lại! Hãy chọn nick hoặc dùng thử 1-click để đăng.");
+    openAuthModal("demo");
+    return;
+  }
 
   CUGAY_DB.addComment(articleId, textarea.value.trim(), parentId);
   closeReplyForm(parentId);
@@ -2183,11 +2271,15 @@ function refreshCommentsList(articleId) {
 }
 
 function handleCommentReaction(commentId, reactionType) {
+  if (!CUGAY_DB.isLoggedIn()) {
+    showToast("Vui lòng chọn tài khoản hoặc 1-click dùng thử để bày tỏ cảm xúc.");
+    openAuthModal("demo");
+    return;
+  }
   CUGAY_DB.toggleReaction("comment", commentId, reactionType);
   showToast("Đã ghi nhận phản hồi bình luận.");
-  // Find current article from URL
-  const hash = window.location.hash;
-  const parts = hash.slice(1).split("/").filter(Boolean);
+  const path = window.location.pathname;
+  const parts = path.split("/").filter(Boolean);
   if (parts[0] === "bai-viet" && parts[1]) {
     const art = CUGAY_DB.getArticleBySlug(parts[1]);
     if (art) refreshCommentsList(art.id);
@@ -2195,12 +2287,16 @@ function handleCommentReaction(commentId, reactionType) {
 }
 
 function handleArticleReaction(targetType, targetId, reactionType) {
+  if (!CUGAY_DB.isLoggedIn()) {
+    showToast("Vui lòng chọn tài khoản hoặc 1-click dùng thử để bày tỏ cảm xúc.");
+    openAuthModal("demo");
+    return;
+  }
   const result = CUGAY_DB.toggleReaction(targetType, targetId, reactionType);
   if (result) {
     showToast(result.userCurrent ? "Đã gửi phản ứng của bạn." : "Đã bỏ phản ứng.");
-    // Re-render current article detail
-    const hash = window.location.hash;
-    const parts = hash.slice(1).split("/").filter(Boolean);
+    const path = window.location.pathname;
+    const parts = path.split("/").filter(Boolean);
     if (parts[0] === "bai-viet" && parts[1]) {
       document.getElementById("app-root").innerHTML = renderArticleDetailView(parts[1]);
     }
@@ -2208,25 +2304,24 @@ function handleArticleReaction(targetType, targetId, reactionType) {
 }
 
 function handleQuickReaction(targetType, targetId, reactionType) {
+  if (!CUGAY_DB.isLoggedIn()) {
+    showToast("Vui lòng chọn tài khoản hoặc 1-click dùng thử để bày tỏ cảm xúc.");
+    openAuthModal("demo");
+    return;
+  }
   CUGAY_DB.toggleReaction(targetType, targetId, reactionType);
   showToast("Đã ghi nhận phản hồi của bạn.");
-  // Re-render feed
-  if (window.location.hash.includes("cong-dong") || window.location.hash === "#/" || !window.location.hash) {
-    const container = document.getElementById("app-root");
-    if (container) {
-      if (window.location.hash.includes("cong-dong")) {
-        container.innerHTML = renderCommunityFeedView(currentCommunityFilter);
-      } else {
-        container.innerHTML = routes.home();
-      }
-    }
-  }
+  if (typeof router !== "undefined") router.handleRouting();
 }
 
 function handleToggleBookmark(type, targetId) {
+  if (!CUGAY_DB.isLoggedIn()) {
+    showToast("Vui lòng chọn tài khoản hoặc 1-click dùng thử để lưu vào sổ tay.");
+    openAuthModal("demo");
+    return;
+  }
   const isBookmarked = CUGAY_DB.toggleBookmark(type, targetId);
   showToast(isBookmarked ? "Đã lưu vào danh sách của bạn!" : "Đã bỏ lưu.");
-  // Re-render active view if needed
   updateHeaderUserWidget();
 }
 
@@ -2246,6 +2341,44 @@ function updateHeaderUserWidget() {
 
   const currentUser = CUGAY_DB.getCurrentUser();
 
+  if (!currentUser) {
+    // Trạng thái Khách vãng lai
+    const guestHtml = `
+      <div class="guest-header-widget">
+        <button class="btn-guest-login" onclick="openAuthModal('login')" title="Đăng nhập tài khoản">
+          <i class="fas fa-sign-in-alt"></i> Đăng nhập
+        </button>
+        <button class="btn-guest-register" onclick="openAuthModal('register')" title="Đăng ký tài khoản trong 10 giây (không cần email/SĐT)">
+          <i class="fas fa-user-plus"></i> Đăng ký (10s)
+        </button>
+        <button class="btn-guest-demo" onclick="openAuthModal('demo')" title="1-Click trải nghiệm ngay với nick mẫu">
+          <i class="fas fa-magic"></i> 🎭 Dùng thử
+        </button>
+      </div>
+    `;
+    container.innerHTML = guestHtml;
+
+    if (mobileContainer) {
+      mobileContainer.innerHTML = `
+        <div style="display: flex; gap: 0.5rem; flex-direction: column;">
+          <button class="btn-primary" onclick="openAuthModal('demo'); toggleMobileMenu();" style="width: 100%; justify-content: center; font-size: 0.88rem;">
+            <i class="fas fa-magic"></i> 🎭 1-Click Trải nghiệm nick mẫu
+          </button>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn-secondary" onclick="openAuthModal('login'); toggleMobileMenu();" style="flex: 1; justify-content: center; font-size: 0.85rem;">
+              <i class="fas fa-sign-in-alt"></i> Đăng nhập
+            </button>
+            <button class="btn-secondary" onclick="openAuthModal('register'); toggleMobileMenu();" style="flex: 1; justify-content: center; font-size: 0.85rem;">
+              <i class="fas fa-user-plus"></i> Đăng ký 10s
+            </button>
+          </div>
+        </div>
+      `;
+    }
+    return;
+  }
+
+  // Trạng thái đã đăng nhập
   const widgetHtml = `
     <div class="user-dropdown-wrapper">
       <button class="user-profile-badge-btn" onclick="toggleUserDropdown()" title="Tài khoản người chơi: ${currentUser.displayName}">
@@ -2257,20 +2390,20 @@ function updateHeaderUserWidget() {
       <div class="user-dropdown-menu" id="user-dropdown-menu">
         <div class="dropdown-header">
           <strong>${currentUser.displayName}</strong>
-          <span>@${currentUser.username} • ${currentUser.role === 'admin' ? 'Tác giả' : 'Người chơi'}</span>
+          <span>@${currentUser.username} • ${currentUser.role === 'admin' ? 'Tác giả (Admin)' : 'Người chơi'}</span>
         </div>
         <div class="dropdown-divider"></div>
-        <a href="#/u/${currentUser.username}" class="dropdown-item" onclick="toggleUserDropdown()">
+        <a href="/u/${currentUser.username}" class="dropdown-item" onclick="toggleUserDropdown()">
           <i class="fas fa-id-card"></i> Hồ sơ của tôi
         </a>
-        <a href="#/viet-bai" class="dropdown-item" onclick="toggleUserDropdown()">
+        <a href="/viet-bai" class="dropdown-item" onclick="toggleUserDropdown()">
           <i class="fas fa-pen-nib"></i> Viết bài chia sẻ
         </a>
-        <a href="#/them-chim" class="dropdown-item" onclick="toggleUserDropdown()">
+        <a href="/them-chim" class="dropdown-item" onclick="toggleUserDropdown()">
           <i class="fas fa-feather"></i> Tạo hồ sơ chim
         </a>
         ${currentUser.role === 'admin' ? `
-          <a href="#/quan-tri" class="dropdown-item" onclick="toggleUserDropdown()" style="color: var(--terracotta);">
+          <a href="/quan-tri" class="dropdown-item" onclick="toggleUserDropdown()" style="color: var(--terracotta);">
             <i class="fas fa-shield-alt"></i> Quản trị kiểm duyệt
           </a>
         ` : ''}
@@ -2281,6 +2414,10 @@ function updateHeaderUserWidget() {
         <button class="dropdown-item" onclick="openAuthModal('register'); toggleUserDropdown();">
           <i class="fas fa-user-plus"></i> Đăng ký tài khoản mới
         </button>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item" onclick="handleLogout(); toggleUserDropdown();" style="color: var(--terracotta);">
+          <i class="fas fa-sign-out-alt"></i> Đăng xuất (Về chế độ khách)
+        </button>
       </div>
     </div>
   `;
@@ -2290,14 +2427,30 @@ function updateHeaderUserWidget() {
   if (mobileContainer) {
     mobileContainer.innerHTML = `
       <div style="display: flex; gap: 0.5rem; flex-direction: column;">
-        <a href="#/u/${currentUser.username}" class="btn-primary" style="font-size: 0.88rem; justify-content: center;">
+        <a href="/u/${currentUser.username}" class="btn-primary" onclick="toggleMobileMenu()" style="font-size: 0.88rem; justify-content: center;">
           <i class="fas fa-id-card"></i> Hồ sơ người chơi (${currentUser.displayName})
         </a>
-        <button class="btn-secondary" onclick="openAuthModal('demo')" style="font-size: 0.88rem; justify-content: center;">
+        <button class="btn-secondary" onclick="openAuthModal('demo'); toggleMobileMenu();" style="font-size: 0.88rem; justify-content: center;">
           <i class="fas fa-random"></i> Đổi tài khoản thử nghiệm
+        </button>
+        <button class="btn-secondary" onclick="handleLogout(); toggleMobileMenu();" style="font-size: 0.88rem; justify-content: center; color: var(--terracotta);">
+          <i class="fas fa-sign-out-alt"></i> Đăng xuất
         </button>
       </div>
     `;
+  }
+}
+
+function handleLogout() {
+  CUGAY_DB.logout();
+  showToast("Đã đăng xuất. Bạn đang ở chế độ khách đọc tự do!");
+  updateHeaderUserWidget();
+  const path = window.location.pathname;
+  if (path === "/quan-tri") {
+    if (typeof router !== "undefined") router.navigate("/");
+    else window.location.hash = "#/";
+  } else {
+    if (typeof router !== "undefined") router.handleRouting();
   }
 }
 
@@ -2339,15 +2492,16 @@ function renderAuthModalContent() {
 
   const users = CUGAY_DB.getAllUsers();
   const current = CUGAY_DB.getCurrentUser();
+  const currentId = current ? current.id : null;
 
   content.innerHTML = `
     <div class="auth-modal-inner">
       <div class="auth-tabs">
         <button class="auth-tab-btn ${currentAuthTab === 'demo' ? 'active' : ''}" onclick="switchAuthTab('demo')">
-          <i class="fas fa-random"></i> Chọn tài khoản mẫu (Demo)
+          <i class="fas fa-magic"></i> 🎭 1-Click Dùng thử (Demo)
         </button>
         <button class="auth-tab-btn ${currentAuthTab === 'register' ? 'active' : ''}" onclick="switchAuthTab('register')">
-          <i class="fas fa-user-plus"></i> Đăng ký tài khoản
+          <i class="fas fa-user-plus"></i> Đăng ký (10s)
         </button>
         <button class="auth-tab-btn ${currentAuthTab === 'login' ? 'active' : ''}" onclick="switchAuthTab('login')">
           <i class="fas fa-sign-in-alt"></i> Đăng nhập
@@ -2356,18 +2510,26 @@ function renderAuthModalContent() {
 
       <!-- Tab Demo Switcher -->
       <div class="auth-pane ${currentAuthTab === 'demo' ? 'active' : ''}" id="auth-pane-demo">
-        <p style="font-size: 0.92rem; color: var(--text-muted); margin-bottom: 1.25rem;">
-          Chuyển đổi nhanh giữa các tài khoản mẫu để trải nghiệm website dưới góc nhìn của Tác giả, Cây Đồng Mồi hoặc Bác Ba Đất Đỏ:
+        <p style="font-size: 0.92rem; color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.5;">
+          <strong>Trải nghiệm tức thì không cần đăng ký:</strong> Chọn một tài khoản mẫu dưới đây để bắt đầu viết bài, thêm chim, bình luận và thả cảm xúc ngay lập tức!
         </p>
         <div class="demo-user-picker-grid">
           ${users.map(u => `
-            <div class="demo-user-card ${u.id === current.id ? 'active-current' : ''}" onclick="switchDemoUser('${u.id}')">
+            <div class="demo-user-card ${u.id === currentId ? 'active-current' : ''}">
               <img src="${u.avatar || './assets/images/hero-dove.jpg'}" alt="${u.displayName}">
-              <div class="demo-user-info">
-                <strong>${u.displayName} ${u.id === current.id ? '<span class="current-tag">(Đang dùng)</span>' : ''}</strong>
-                <span>@${u.username} • ${u.role === 'admin' ? 'Tác giả' : `${u.experienceYears} năm KN`}</span>
+              <div class="demo-user-info" style="flex: 1;">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
+                  <strong>${u.displayName} ${u.id === currentId ? '<span class="current-tag">(Đang dùng)</span>' : ''}</strong>
+                  <span class="badge ${u.role === 'admin' ? 'badge-author' : 'badge-community'}">
+                    ${u.role === 'admin' ? 'Tác giả / Admin' : `${u.experienceYears} năm KN`}
+                  </span>
+                </div>
+                <span>@${u.username} • ${u.location || 'Việt Nam'}</span>
                 <p class="demo-user-quote">"${u.quote || u.bio}"</p>
               </div>
+              <button type="button" class="btn-primary btn-sm" onclick="switchDemoUser('${u.id}')" style="white-space: nowrap; align-self: center;">
+                ${u.id === currentId ? 'Đang dùng' : '👉 Chọn nick này'}
+              </button>
             </div>
           `).join("")}
         </div>
@@ -2376,36 +2538,37 @@ function renderAuthModalContent() {
       <!-- Tab Register -->
       <div class="auth-pane ${currentAuthTab === 'register' ? 'active' : ''}" id="auth-pane-register">
         <form onsubmit="handleRegisterSubmit(event)" class="rustic-form">
+          <div style="background: rgba(139, 107, 73, 0.08); padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.25rem; font-size: 0.88rem; color: var(--text-main); border-left: 3px solid var(--bamboo-green);">
+            <i class="fas fa-leaf" style="color: var(--bamboo-green);"></i> 
+            <strong>Đăng ký siêu tốc 10 giây:</strong> Không cần email, không cần số điện thoại hay mã OTP phiền toái. Chỉ cần đặt tên là bạn đã có ngay sổ tay riêng của mình!
+          </div>
+
           <div class="form-row-2">
             <div class="form-group">
-              <label>Tên hiển thị (Biệt danh chơi chim) <span class="required">*</span></label>
-              <input type="text" name="displayName" placeholder="Ví dụ: Ba Gác Rừng, Đồng Bến Cát..." required>
+              <label>Tên hiển thị (Biệt danh / Nghệ danh) <span class="required">*</span></label>
+              <input type="text" name="displayName" placeholder="Ví dụ: Ba Đạt Miền Tây, Chú Năm Vườn Tràm..." required autofocus>
             </div>
             <div class="form-group">
-              <label>Tên người dùng (Username) <span class="required">*</span></label>
-              <input type="text" name="username" placeholder="Ví dụ: bagacdung, dongbencat..." required>
+              <label>Tên đăng nhập (Username viết liền) <span class="required">*</span></label>
+              <input type="text" name="username" placeholder="Ví dụ: badat, chunam..." required>
             </div>
           </div>
           <div class="form-row-2">
             <div class="form-group">
-              <label>Số năm chơi cu gáy (Tùy chọn)</label>
-              <input type="number" name="experienceYears" placeholder="Ví dụ: 5" min="0" max="60">
-            </div>
-            <div class="form-group">
               <label>Khu vực chơi chim / Tỉnh thành</label>
               <input type="text" name="location" placeholder="Ví dụ: Trảng Bom, Đồng Nai...">
+            </div>
+            <div class="form-group">
+              <label>Số năm chơi cu gáy</label>
+              <input type="number" name="experienceYears" placeholder="Ví dụ: 5" min="0" max="60" value="3">
             </div>
           </div>
           <div class="form-group">
             <label>Câu châm ngôn / Quan điểm nhìn chim của bạn</label>
             <input type="text" name="quote" placeholder="Ví dụ: Tôi không tìm con chim đẹp nhất. Tôi tìm con chim hợp cách chơi.">
           </div>
-          <div class="form-group">
-            <label>Giới thiệu ngắn về bản thân</label>
-            <textarea name="bio" rows="2" placeholder="Ví dụ: Đam mê tiếng cu gáy sớm mai, thích dợt cội cuối tuần..."></textarea>
-          </div>
-          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem;">
-            <i class="fas fa-check"></i> Hoàn tất đăng ký & Đăng nhập ngay
+          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.85rem; font-size: 1rem; margin-top: 0.5rem;">
+            <i class="fas fa-check-circle"></i> Tạo tài khoản & Bắt đầu ngay
           </button>
         </form>
       </div>
@@ -2415,11 +2578,34 @@ function renderAuthModalContent() {
         <form onsubmit="handleLoginSubmit(event)" class="rustic-form">
           <div class="form-group">
             <label>Tên người chơi (Username)</label>
-            <input type="text" name="username" placeholder="Nhập username (ví dụ: tacgia, caydongmoi, bacbadatdo)" required>
+            <input type="text" id="login-username-input" name="username" placeholder="Nhập username (ví dụ: tacgia, caydongmoi, bacbadatdo)" required autofocus>
           </div>
-          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem;">
+
+          <div style="margin-bottom: 1.25rem;">
+            <span style="font-size: 0.82rem; color: var(--text-muted); display: block; margin-bottom: 0.4rem;">Gợi ý tài khoản mẫu (Bấm để điền nhanh):</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+              <button type="button" class="tag" onclick="document.getElementById('login-username-input').value='tacgia'" style="cursor: pointer;">
+                @tacgia (Tác giả)
+              </button>
+              <button type="button" class="tag" onclick="document.getElementById('login-username-input').value='caydongmoi'" style="cursor: pointer;">
+                @caydongmoi
+              </button>
+              <button type="button" class="tag" onclick="document.getElementById('login-username-input').value='bacbadatdo'" style="cursor: pointer;">
+                @bacbadatdo
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.85rem; font-size: 1rem;">
             <i class="fas fa-sign-in-alt"></i> Đăng nhập vào sổ tay
           </button>
+
+          <div style="text-align: center; margin-top: 1.25rem; font-size: 0.88rem; color: var(--text-muted);">
+            Chưa có tài khoản? 
+            <a href="javascript:void(0)" onclick="switchAuthTab('register')" style="color: var(--wood-main); font-weight: 600;">Đăng ký chỉ 10s</a>
+            hoặc 
+            <a href="javascript:void(0)" onclick="switchAuthTab('demo')" style="color: var(--copper); font-weight: 600;">1-Click Dùng thử</a>
+          </div>
         </form>
       </div>
     </div>
@@ -2431,27 +2617,69 @@ function switchAuthTab(tabKey) {
   renderAuthModalContent();
 }
 
+function checkPendingActions() {
+  if (window._pendingComment) {
+    const pc = window._pendingComment;
+    window._pendingComment = null;
+    CUGAY_DB.addComment(pc.articleId, pc.content, pc.parentId);
+    showToast(`Đã tự động gửi bình luận với tư cách ${CUGAY_DB.getCurrentUser().displayName}!`);
+    refreshCommentsList(pc.articleId);
+    return true;
+  }
+  if (window._pendingArticle) {
+    const pa = window._pendingArticle;
+    window._pendingArticle = null;
+    const newArt = CUGAY_DB.createArticle(pa);
+    if (newArt) {
+      showToast("Đã tự động xuất bản bài viết của bạn!");
+      if (typeof router !== "undefined") router.navigate(`/bai-viet/${newArt.slug}`);
+      else window.location.hash = `#/bai-viet/${newArt.slug}`;
+      return true;
+    }
+  }
+  if (window._pendingBird) {
+    const pb = window._pendingBird;
+    window._pendingBird = null;
+    const newBird = CUGAY_DB.createBird(pb);
+    if (newBird) {
+      showToast("Đã tự động khởi tạo hồ sơ cá thể chim!");
+      if (typeof router !== "undefined") router.navigate(`/chim/${newBird.id}`);
+      else window.location.hash = `#/chim/${newBird.id}`;
+      return true;
+    }
+  }
+  return false;
+}
+
 function switchDemoUser(userId) {
   const user = CUGAY_DB.setCurrentUser(userId);
   if (user) {
     showToast(`Đã chuyển sang vai: ${user.displayName}`);
     updateHeaderUserWidget();
     closeAuthModal();
-    // Refresh page
-    window.location.hash = `#/u/${user.username}`;
+    if (checkPendingActions()) return;
+    if (typeof router !== "undefined") router.handleRouting();
+    else window.location.hash = `#/u/${user.username}`;
   }
 }
 
 function handleRegisterSubmit(e) {
   e.preventDefault();
   const form = e.target;
+  const username = form.username.value.trim().toLowerCase();
+  const displayName = form.displayName.value.trim();
+  if (!username || !displayName) {
+    showToast("Vui lòng nhập Tên hiển thị và Username");
+    return;
+  }
+
   const res = CUGAY_DB.register({
-    username: form.username.value,
-    displayName: form.displayName.value,
-    experienceYears: form.experienceYears.value,
-    location: form.location.value,
-    quote: form.quote.value,
-    bio: form.bio.value,
+    username: username,
+    displayName: displayName,
+    experienceYears: form.experienceYears ? form.experienceYears.value : 1,
+    location: form.location ? form.location.value : "",
+    quote: form.quote ? form.quote.value : "Đam mê nét gáy mộc mạc.",
+    bio: form.bio ? form.bio.value : "",
     avatar: "./assets/images/hero-dove.jpg"
   });
 
@@ -2459,7 +2687,9 @@ function handleRegisterSubmit(e) {
     showToast(`Chào mừng ${res.user.displayName} gia nhập Thư viện Cu Gáy!`);
     updateHeaderUserWidget();
     closeAuthModal();
-    window.location.hash = `#/u/${res.user.username}`;
+    if (checkPendingActions()) return;
+    if (typeof router !== "undefined") router.navigate(`/u/${res.user.username}`);
+    else window.location.hash = `#/u/${res.user.username}`;
   } else {
     alert(res.message);
   }
@@ -2468,12 +2698,15 @@ function handleRegisterSubmit(e) {
 function handleLoginSubmit(e) {
   e.preventDefault();
   const form = e.target;
-  const res = CUGAY_DB.login(form.username.value, "");
+  const username = form.username.value.trim().toLowerCase();
+  const res = CUGAY_DB.login(username, "");
   if (res.success) {
     showToast(`Đăng nhập thành công: ${res.user.displayName}`);
     updateHeaderUserWidget();
     closeAuthModal();
-    window.location.hash = `#/u/${res.user.username}`;
+    if (checkPendingActions()) return;
+    if (typeof router !== "undefined") router.handleRouting();
+    else window.location.hash = `#/u/${res.user.username}`;
   } else {
     alert(res.message);
   }
@@ -2488,6 +2721,11 @@ function openProfileEditModal() {
   if (!modal || !content) return;
 
   const user = CUGAY_DB.getCurrentUser();
+  if (!user) {
+    showToast("Vui lòng đăng nhập để chỉnh sửa hồ sơ.");
+    openAuthModal("demo");
+    return;
+  }
 
   content.innerHTML = `
     <div class="profile-edit-modal-inner">
@@ -2548,6 +2786,7 @@ function handleSaveProfileSubmit(e) {
   e.preventDefault();
   const form = e.target;
   const currentUser = CUGAY_DB.getCurrentUser();
+  if (!currentUser) return;
 
   CUGAY_DB.updateProfile(currentUser.id, {
     displayName: form.displayName.value.trim(),
